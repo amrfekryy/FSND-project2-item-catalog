@@ -33,11 +33,14 @@ class Item(Base):
     category = relationship("Category")
 
 
-if __name__ == '__main__':
-    
+def main():
     # [create and] bind db to SQLAlchemy engine
     engine = create_engine('sqlite:///item_catalog.db')
     # create db tables (Base sub-classes)
     Base.metadata.create_all(engine)
 
     print("\nDatabase has been setup\n")
+
+
+if __name__ == '__main__':
+    main()
