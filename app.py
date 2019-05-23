@@ -16,19 +16,11 @@ def remove_session(ex=None):
     db_session.remove()
 
 
-@app.route('/', methods=['GET', 'POST'])
-def test():
-	if request.method == 'POST':
-		print(request.form.get('answer'))
-		return render_template('delete_item.html')
-
-	else:
-		return render_template('index.html')
-
-
+@app.route('/')
 @app.route('/catalog/')
 def index():
-	return "A list of categories and the latest items added"
+	categories = db_session.query(Category).all()
+	return render_template('index.html', categories=categories)
 
 
 @app.route('/categories/add/')
