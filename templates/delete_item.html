@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <div class="card m-auto" style="width: 25rem;">
+    <div class="card-body" style="text-align: center">
+
+      <h5 class="card-title mb-5">Are you sure you want to delete item <i>Item_Name</i> ?</h5>
+      <form action="{{url_for('test')}}" method='post'>
+        <button type="submit" name="answer" value="yes" class="btn btn-primary mb-3" style="width:100px">YES</button>
+        <button type="submit" name="answer" value="no" class="btn btn-primary mb-3" style="width:100px">NO</button>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

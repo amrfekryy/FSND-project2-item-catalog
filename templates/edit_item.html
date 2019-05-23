@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <div class="card m-auto" style="width: 20rem;">
+    <div class="card-body" style="text-align: center">
+
+      <h5 class="card-title">Edit Item</h5>
+      <form action="#">
+        <input class="form-control mb-3" name="item_new_name" type="text" placeholder="Item Name">
+        <textarea class="form-control mb-3" name="item_new_description" type="text" placeholder="Item Description" rows="3"></textarea>
+        <button type="submit" class="btn btn-primary mb-3" style="width:100px">Edit</button>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

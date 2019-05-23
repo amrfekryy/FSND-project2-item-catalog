@@ -2,7 +2,7 @@
 import sys
 sys.path.append("./database/")
 
-from flask import Flask
+from flask import (Flask, render_template, request)
 from db_session import *
 
 app = Flask(__name__)
@@ -16,7 +16,16 @@ def remove_session(ex=None):
     db_session.remove()
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
+def test():
+	if request.method == 'POST':
+		print(request.form.get('answer'))
+		return render_template('delete_item.html')
+
+	else:
+		return render_template('delete_item.html')
+
+
 @app.route('/catalog/')
 def index():
 	return "A list of categories and the latest items added"
