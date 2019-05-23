@@ -23,7 +23,7 @@ def test():
 		return render_template('delete_item.html')
 
 	else:
-		return render_template('delete_item.html')
+		return render_template('index.html')
 
 
 @app.route('/catalog/')
