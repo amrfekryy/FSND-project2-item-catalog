@@ -17,31 +17,51 @@ def remove_session(ex=None):
 
 
 @app.route('/')
+@app.route('/catalog/')
 def index():
-	categories = db_session.query(Category).all()
-	items = db_session.query(Item).all()
+	return "A list of categories and the latest items added"
 
-	output = """
-		<h1>Categories</h1>
-		<ul>
-			{}
-		</ul>
-		<br>
-		<h1>Items</h1>
-		<ul>
-			{}
-		</ul>
-	"""
 
-	categories_list = ""
-	items_list = ""
-	
-	for category in categories:
-		categories_list += f"<li>{category.name}</li>"
-	for item in items:
-		items_list += f"<li>{item.name}</li>"
+@app.route('/categories/add/')
+def add_category():
+	return "A form for adding a new category"
 
-	return output.format(categories_list, items_list)
+
+@app.route('/categories/<int:category_id>/')
+@app.route('/categories/<int:category_id>/items/')
+def category_items(category_id):
+	return f"A list of items that belong to category with id {category_id}"
+
+
+@app.route('/categories/<int:category_id>/rename/')
+def rename_category(category_id):
+	return f"A form for renaming category with id {category_id}"
+
+
+@app.route('/categories/<int:category_id>/delete/')
+def delete_category(category_id):
+	return f"A form for deleting category with id {category_id}"
+
+
+@app.route('/categories/<int:category_id>/items/add/')
+def add_item(category_id):
+	return f"A form for adding a new item to category with id {category_id}"
+
+
+@app.route('/items/<int:item_id>/')
+def item_info(item_id):
+	return f"Description of item with id {item_id}"
+
+
+@app.route('/items/<int:item_id>/edit/')
+def edit_item(item_id):
+	return f"A form for editing item with id {item_id}"
+
+
+@app.route('/items/<int:item_id>/delete/')
+def delete_item(item_id):
+	return f"A form for deleting item with id {item_id}"
+
 
 
 if __name__=='__main__':
