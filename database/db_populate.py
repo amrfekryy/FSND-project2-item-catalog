@@ -1,16 +1,5 @@
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from db_setup import Base, Category, Item
-
-# bind to db and tables
-engine = create_engine('sqlite:///item_catalog.db')
-Base.metadata.bind = engine
-
-# establish session connection
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+from db_session import *
 
 
 def main():
@@ -29,10 +18,10 @@ def main():
 		name = "Pitch",
 		description = """A pitch or a sports ground is an outdoor playing area for various sports. The term pitch is most commonly used in British English, while the comparable term in American and Canadian English is playing field or sports field.""",
 		category = category)
-	session.add(category)
-	session.add(Item1)
-	session.add(Item2)
-	session.add(Item3)
+	db_session.add(category)
+	db_session.add(Item1)
+	db_session.add(Item2)
+	db_session.add(Item3)
 
 
 	category = Category(name = "Car")
@@ -48,10 +37,10 @@ def main():
 		name = "Windshield",
 		description = """The windshield (North American English) or windscreen (Commonwealth English) of an aircraft, car, bus, motorbike or tram is the front window, which provides visibility whilst protecting occupants from the elements. Modern windshields are generally made of laminated safety glass, a type of treated glass, which consists of, typically, two curved sheets of glass with a plastic layer laminated between them for safety, and bonded into the window frame.""",
 		category = category)
-	session.add(category)
-	session.add(Item1)
-	session.add(Item2)
-	session.add(Item3)
+	db_session.add(category)
+	db_session.add(Item1)
+	db_session.add(Item2)
+	db_session.add(Item3)
 
 
 	category = Category(name = "Computer")
@@ -71,14 +60,14 @@ def main():
 		name = "Central processing unit",
 		description = """A central processing unit (CPU), also called a central processor or main processor, is the electronic circuitry within a computer that carries out the instructions of a computer program by performing the basic arithmetic, logic, controlling, and input/output (I/O) operations specified by the instructions. The computer industry has used the term "central processing unit" at least since the early 1960s. Traditionally, the term "CPU" refers to a processor, more specifically to its processing unit and control unit (CU), distinguishing these core elements of a computer from external components such as main memory and I/O circuitry.""",
 		category = category)
-	session.add(category)
-	session.add(Item1)
-	session.add(Item2)
-	session.add(Item3)
-	session.add(Item4)
+	db_session.add(category)
+	db_session.add(Item1)
+	db_session.add(Item2)
+	db_session.add(Item3)
+	db_session.add(Item4)
 
 
-	session.commit()
+	db_session.commit()
 
 	print("\nDatabase has been populated with initial data\n")
 

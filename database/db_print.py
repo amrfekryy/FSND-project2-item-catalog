@@ -1,22 +1,12 @@
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from db_setup import Base, Category, Item
+from db_session import *
 
 
 def main():
-	# bind to db and tables
-	engine = create_engine('sqlite:///item_catalog.db')
-	Base.metadata.bind = engine
-
-	# establish session connection
-	DBSession = sessionmaker(bind=engine)
-	session = DBSession()
 
 	# get the lists
-	categories = session.query(Category).all()
-	items = session.query(Item).all()
+	categories = db_session.query(Category).all()
+	items = db_session.query(Item).all()
 
 	print()
 
