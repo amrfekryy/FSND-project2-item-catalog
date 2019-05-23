@@ -8,6 +8,14 @@ from db_session import *
 app = Flask(__name__)
 
 
+# clear db session after each request
+# https://stackoverflow.com/a/34010159
+# https://stackoverflow.com/q/30521112
+@app.teardown_request
+def remove_session(ex=None):
+    db_session.remove()
+
+
 @app.route('/')
 def index():
 	categories = db_session.query(Category).all()
