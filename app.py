@@ -132,9 +132,20 @@ def edit_item(item_id):
 		return render_template('edit_item.html', item=item)
 
 
-@app.route('/items/<int:item_id>/delete/')
+@app.route('/items/<int:item_id>/delete/', methods=['GET', 'POST'])
 def delete_item(item_id):
-	return f"A form for deleting item with id {item_id}"
+	item = db_session.query(Item).filter_by(id=item_id).one()
+	if request.method == 'POST':
+		# get form inputs
+		answer = request.form.get('answer')
+		# verify answer
+		if answer == 'yes':
+			# delete item
+			db_session.delete(item)
+			db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('delete_item.html', item=item)
 
 
 
