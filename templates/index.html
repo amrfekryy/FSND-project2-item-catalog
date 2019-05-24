@@ -2,6 +2,7 @@
 
 {% block style %}
 <style>
+  .crud_icon {color: black}
   .crud_icon:hover {color: #007BFF}
 </style>
 {% endblock %}
@@ -13,7 +14,7 @@
     <div class="list-group" id="list-tab" role="tablist">
       <li class="list-group-item d-flex align-items-center" role="tab"> <strong>Category</strong>
         <!-- Add Category icon -->
-        <a class="ml-2" title="Add New Category">
+        <a href="{{url_for('add_category')}}" class="ml-2" title="Add New Category">
           <span class="crud_icon">
             <i class="fas fa-plus-circle fa-sm"></i>
           </span>
@@ -21,7 +22,7 @@
       </li>
       {% for category in categories %}
       <li class="list-group-item list-group-item-action list-group-item-info d-flex justify-content-between align-items-center" id="list-{{category.name}}-list" data-toggle="list" href="#list-{{category.name}}" role="tab" aria-controls="{{category.name}}"> {{category.name}}
-        <span class="badge badge-primary badge-pill mr-2">{{category.items | length}}</span>
+        <span class="badge badge-primary badge-pill mr-2" title="Number of Items">{{category.items | length}}</span>
       </li>
       {% endfor %}
     </div>
@@ -34,20 +35,20 @@
           <div class="list-group-item pl-4">
             <strong>{{category.name}} Items</strong>
             <!-- Add Item icon -->
-            <a class="ml-2" title="Add New Item">
+            <a href="{{url_for('add_item', category_id=category.id)}}" class="ml-2" title="Add New Item">
               <span class="crud_icon">
                 <i class="fas fa-plus-circle fa-sm"></i>
               </span>
             </a>
             <div style="position: absolute; right: 15px; top: 13px">
               <!-- Rename Category icon -->
-              <a class="ml-2" title="Rename This Category">
+              <a href="{{url_for('rename_category', category_id=category.id)}}" class="ml-2" title="Rename This Category">
                 <span class="crud_icon">
                   <i class="fas fa-edit fa-sm"></i>
                 </span>
               </a>
               <!-- Delete Category icon -->
-              <a class="ml-2" title="Delete This Category">
+              <a href="{{url_for('delete_category', category_id=category.id)}}" class="ml-2" title="Delete This Category">
                 <span class="crud_icon">
                   <i class="fas fa-trash-alt fa-sm"></i>
                 </span>
@@ -62,14 +63,14 @@
               </button>
               <!-- {{'A' + item.id|string}} converting id into string then concatenating with 'A'  -->
               <div style="position: absolute; right: 15px; top: 13px">
-                <!-- Rename Item icon -->
-                <a class="ml-2" title="Rename This Item">
+                <!-- Edit Item icon -->
+                <a href="{{url_for('edit_item', item_id=item.id)}}" class="ml-2" title="Edit This Item">
                   <span class="crud_icon">
                     <i class="fas fa-edit fa-sm"></i>
                   </span>
                 </a>
                 <!-- Delete Item icon -->
-                <a class="ml-2" title="Delete This Item">
+                <a href="{{url_for('delete_item', item_id=item.id)}}" class="ml-2" title="Delete This Item">
                   <span class="crud_icon">
                     <i class="fas fa-trash-alt fa-sm"></i>
                   </span>
