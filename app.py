@@ -66,9 +66,22 @@ def rename_category(category_id):
 		return render_template('rename_category.html', category=category)
 
 
-@app.route('/categories/<int:category_id>/delete/')
+@app.route('/categories/<int:category_id>/delete/', methods=['GET', 'POST'])
 def delete_category(category_id):
-	return f"A form for deleting category with id {category_id}"
+	category = db_session.query(Category).filter_by(id=category_id).one()
+	if request.method == 'POST':
+		# get form inputs
+		answer = request.form.get('answer')
+		# verify answer
+		if answer == 'yes':
+			# delete category and its items
+			for item in category.items:
+				db_session.delete(item)
+			db_session.delete(category)
+			db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('delete_category.html', category=category)
 
 
 @app.route('/categories/<int:category_id>/items/add/', methods=['GET', 'POST'])
