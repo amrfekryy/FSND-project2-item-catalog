@@ -58,9 +58,25 @@ def delete_category(category_id):
 	return f"A form for deleting category with id {category_id}"
 
 
-@app.route('/categories/<int:category_id>/items/add/')
+@app.route('/categories/<int:category_id>/items/add/', methods=['GET', 'POST'])
 def add_item(category_id):
-	return f"A form for adding a new item to category with id {category_id}"
+	if request.method == 'POST':
+		# get form inputs
+		item_name = request.form.get('item_name')
+		item_description = request.form.get('item_description')
+		# verify inputs
+		if not item_name:
+			return "Item name was not provided"
+		# create new item
+		new_item = Item(
+			name=item_name,
+			description=item_description,
+			category_id=category_id)
+		db_session.add(new_item)
+		db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('add_item.html', category_id=category_id)
 
 
 @app.route('/items/<int:item_id>/')
