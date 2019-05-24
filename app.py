@@ -4,7 +4,7 @@ sys.path.append("./database/")
 
 from flask import (
 	Flask, render_template, request, redirect,
-	url_for)
+	url_for, flash)
 from db_session import *
 
 app = Flask(__name__)
@@ -32,11 +32,13 @@ def add_category():
 		category_name = request.form.get('category_name')
 		# verify form inputs
 		if not category_name:
-			return "Category name was not provided"
+			flash("Category name was not provided","danger")
+			return redirect(url_for('add_category'))
 		# create new category
 		new_category = Category(name=category_name)
 		db_session.add(new_category)
 		db_session.commit()
+		flash(f"A new category <i>{category_name}</i> has been added","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('add_category.html')
@@ -56,11 +58,13 @@ def rename_category(category_id):
 		category_new_name = request.form.get('category_new_name')
 		# verify inputs
 		if not category_new_name:
-			return "Category new name was not provided"
+			flash("Category new name was not provided","danger")
+			return redirect(url_for('rename_category', category_id=category_id))
 		# update category
 		category.name = category_new_name
 		db_session.add(category)
 		db_session.commit()
+		flash(f"Category <i>{category.name}</i> has been renamed","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('rename_category.html', category=category)
@@ -79,6 +83,7 @@ def delete_category(category_id):
 				db_session.delete(item)
 			db_session.delete(category)
 			db_session.commit()
+			flash(f"Category <i>{category.name}</i> has been deleted","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('delete_category.html', category=category)
@@ -92,7 +97,8 @@ def add_item(category_id):
 		item_description = request.form.get('item_description')
 		# verify inputs
 		if not item_name:
-			return "Item name was not provided"
+			flash("Item name was not provided","danger")
+			return redirect(url_for('add_item', category_id=category_id))
 		if not item_description:
 			item_description = "No description yet"
 		# create new item
@@ -102,6 +108,7 @@ def add_item(category_id):
 			category_id=category_id)
 		db_session.add(new_item)
 		db_session.commit()
+		flash(f"Item <i>{new_item.name}</i> has been added","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('add_item.html', category_id=category_id)
@@ -121,12 +128,14 @@ def edit_item(item_id):
 		item_new_description = request.form.get('item_new_description')
 		# verify inputs
 		if not (item_new_name or item_new_description):
-			return "No inputs were provided"
+			flash("No inputs were provided","danger")
+			return redirect(url_for('edit_item', item_id=item_id))
 		# update item
 		if item_new_name: item.name = item_new_name
 		if item_new_description: item.description = item_new_description
 		db_session.add(item)
 		db_session.commit()
+		flash(f"Item <i>{item.name}</i> has been updated","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('edit_item.html', item=item)
@@ -143,6 +152,7 @@ def delete_item(item_id):
 			# delete item
 			db_session.delete(item)
 			db_session.commit()
+			flash(f"Item <i>{item.name}</i> has been deleted","success")
 		return redirect(url_for('index'))
 	else:
 		return render_template('delete_item.html', item=item)
@@ -150,5 +160,6 @@ def delete_item(item_id):
 
 
 if __name__=='__main__':
+	app.secret_key = 'super_secret_key'
 	app.debug = True
 	app.run(host='0.0.0.0', port=5000)
