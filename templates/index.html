@@ -1,12 +1,23 @@
 {% extends 'layout.html' %}
 
+{% block style %}
+<style>
+  .crud_icon:hover {color: #007BFF}
+</style>
+{% endblock %}
+
 {% block body %}
 
 <div class="row">
   <div class="col-4" style="min-width: 14rem">
     <div class="list-group" id="list-tab" role="tablist">
-      <li class="list-group-item d-flex disabled justify-content-between align-items-center" role="tab"> <strong>Category</strong>
-        <span class="badge badge-primary badge-pill">items</span>
+      <li class="list-group-item d-flex align-items-center" role="tab"> <strong>Category</strong>
+        <!-- Add Category icon -->
+        <a class="ml-2" title="Add New Category">
+          <span class="crud_icon">
+            <i class="fas fa-plus-circle fa-sm"></i>
+          </span>
+        </a>
       </li>
       {% for category in categories %}
       <li class="list-group-item list-group-item-action list-group-item-info d-flex justify-content-between align-items-center" id="list-{{category.name}}-list" data-toggle="list" href="#list-{{category.name}}" role="tab" aria-controls="{{category.name}}"> {{category.name}}
@@ -20,16 +31,50 @@
       {% for category in categories %}
       <div class="tab-pane fade show" id="list-{{category.name}}" role="tabpanel" aria-labelledby="list-{{category.name}}-list">
         <div class="accordion" id="{{'C' + category.id|string}}">
-          <div class="list-group-item pl-4 disabled">
+          <div class="list-group-item pl-4">
             <strong>{{category.name}} Items</strong>
+            <!-- Add Item icon -->
+            <a class="ml-2" title="Add New Item">
+              <span class="crud_icon">
+                <i class="fas fa-plus-circle fa-sm"></i>
+              </span>
+            </a>
+            <div style="position: absolute; right: 15px; top: 13px">
+              <!-- Rename Category icon -->
+              <a class="ml-2" title="Rename This Category">
+                <span class="crud_icon">
+                  <i class="fas fa-edit fa-sm"></i>
+                </span>
+              </a>
+              <!-- Delete Category icon -->
+              <a class="ml-2" title="Delete This Category">
+                <span class="crud_icon">
+                  <i class="fas fa-trash-alt fa-sm"></i>
+                </span>
+              </a>              
+            </div>
           </div>
           {% for item in category.items %}          
           <div class="card">
             <div class="card-header" id="{{'B' + item.id|string}}" style="height: 50px">
-                <button class="btn btn-link pt-0" type="button" data-toggle="collapse" data-target="#{{'A' + item.id|string}}" aria-expanded="true" aria-controls="{{'A' + item.id|string}}">
-                  {{item.name}}
-                </button>
-                <!-- {{'A' + item.id|string}} converting id into string then concatenating with 'A'  -->
+              <button class="btn btn-link pt-0" type="button" data-toggle="collapse" data-target="#{{'A' + item.id|string}}" aria-expanded="true" aria-controls="{{'A' + item.id|string}}">
+                {{item.name}}
+              </button>
+              <!-- {{'A' + item.id|string}} converting id into string then concatenating with 'A'  -->
+              <div style="position: absolute; right: 15px; top: 13px">
+                <!-- Rename Item icon -->
+                <a class="ml-2" title="Rename This Item">
+                  <span class="crud_icon">
+                    <i class="fas fa-edit fa-sm"></i>
+                  </span>
+                </a>
+                <!-- Delete Item icon -->
+                <a class="ml-2" title="Delete This Item">
+                  <span class="crud_icon">
+                    <i class="fas fa-trash-alt fa-sm"></i>
+                  </span>
+                </a>              
+              </div>
             </div>
 
             <div id="{{'A' + item.id|string}}" class="collapse" aria-labelledby="{{'B' + item.id|string}}" data-parent="#{{'C' + category.id|string}}">
