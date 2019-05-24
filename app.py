@@ -80,6 +80,8 @@ def add_item(category_id):
 		# verify inputs
 		if not item_name:
 			return "Item name was not provided"
+		if not item_description:
+			item_description = "No description yet"
 		# create new item
 		new_item = Item(
 			name=item_name,
@@ -97,9 +99,24 @@ def item_info(item_id):
 	return f"Description of item with id {item_id}"
 
 
-@app.route('/items/<int:item_id>/edit/')
+@app.route('/items/<int:item_id>/edit/', methods=['GET', 'POST'])
 def edit_item(item_id):
-	return f"A form for editing item with id {item_id}"
+	item = db_session.query(Item).filter_by(id=item_id).one()
+	if request.method == 'POST':
+		# get form inputs
+		item_new_name = request.form.get('item_new_name')
+		item_new_description = request.form.get('item_new_description')
+		# verify inputs
+		if not (item_new_name or item_new_description):
+			return "No inputs were provided"
+		# update item
+		if item_new_name: item.name = item_new_name
+		if item_new_description: item.description = item_new_description
+		db_session.add(item)
+		db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('edit_item.html', item=item)
 
 
 @app.route('/items/<int:item_id>/delete/')
