@@ -6,7 +6,7 @@
     <div class="card-body" style="text-align: center">
 
       <h5 class="card-title">Add Category</h5>
-      <form action="#">
+      <form action="{{url_for('add_category')}}" method="post">
         <input class="form-control mb-3" name="category_name" type="text" placeholder="Category Name">
         <button type="submit" class="btn btn-primary mb-3" style="width:100px">Add</button>
       </form>

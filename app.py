@@ -2,7 +2,9 @@
 import sys
 sys.path.append("./database/")
 
-from flask import (Flask, render_template, request)
+from flask import (
+	Flask, render_template, request, redirect,
+	url_for)
 from db_session import *
 
 app = Flask(__name__)
@@ -23,9 +25,21 @@ def index():
 	return render_template('index.html', categories=categories)
 
 
-@app.route('/categories/add/')
+@app.route('/categories/add/', methods=['GET', 'POST'])
 def add_category():
-	return "A form for adding a new category"
+	if request.method == 'POST':
+		# get form inputs
+		category_name = request.form.get('category_name')
+		# verify form inputs
+		if not category_name:
+			return "Category name was not provided"
+		# create new category
+		new_category = Category(name=category_name)
+		db_session.add(new_category)
+		db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('add_category.html')
 
 
 @app.route('/categories/<int:category_id>/')
