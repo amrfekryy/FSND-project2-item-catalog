@@ -6,8 +6,8 @@
     <div class="card-body" style="text-align: center">
 
       <h5 class="card-title">Rename Category</h5>
-      <form action="#">
-        <input class="form-control mb-3" name="category_new_name" type="text" placeholder="Category_Old_Name">
+      <form action="{{url_for('rename_category', category_id=category.id)}}", method="post">
+        <input class="form-control mb-3" name="category_new_name" type="text" value="{{category.name}}">
         <button type="submit" class="btn btn-primary mb-3" style="width:100px">Rename</button>
       </form>
 

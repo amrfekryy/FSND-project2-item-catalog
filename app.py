@@ -48,9 +48,22 @@ def category_items(category_id):
 	return f"A list of items that belong to category with id {category_id}"
 
 
-@app.route('/categories/<int:category_id>/rename/')
+@app.route('/categories/<int:category_id>/rename/', methods=['GET', 'POST'])
 def rename_category(category_id):
-	return f"A form for renaming category with id {category_id}"
+	category = db_session.query(Category).filter_by(id=category_id).one()
+	if request.method == 'POST':
+		# get form inputs
+		category_new_name = request.form.get('category_new_name')
+		# verify inputs
+		if not category_new_name:
+			return "Category new name was not provided"
+		# update category
+		category.name = category_new_name
+		db_session.add(category)
+		db_session.commit()
+		return redirect(url_for('index'))
+	else:
+		return render_template('rename_category.html', category=category)
 
 
 @app.route('/categories/<int:category_id>/delete/')
