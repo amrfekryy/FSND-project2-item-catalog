@@ -4,7 +4,7 @@ sys.path.append("./database/")
 
 from flask import (
 	Flask, render_template, request, redirect,
-	url_for, flash)
+	url_for, flash, jsonify)
 from db_session import *
 
 app = Flask(__name__)
@@ -156,6 +156,45 @@ def delete_item(item_id):
 		return redirect(url_for('index'))
 	else:
 		return render_template('delete_item.html', item=item)
+
+
+@app.route('/api/')
+def api_docs():
+	return render_template('api_docs.html')
+
+
+
+@app.route('/api/categories')
+def api_categories():
+	categories = db_session.query(Category).all()
+	return jsonify(categories = [category.serialize for category in categories])
+
+
+@app.route('/api/category/<int:category_id>')
+def api_category(category_id):
+	try:
+		category = db_session.query(Category).filter_by(id=category_id).one()
+	except:
+		return f"There is no category with id {category_id}"
+	
+	items_list = []
+	for item in category.items:
+		items_list.append({'item_id': item.id, 'item_name': item.name})
+
+	return jsonify(
+		category_id = category.id,
+		category_name = category.name,
+		category_items = items_list )
+
+
+@app.route('/api/item/<int:item_id>')
+def api_item(item_id):
+	try:
+		item = db_session.query(Item).filter_by(id=item_id).one()
+	except:
+		return f"There is no item with id {item_id}"
+		
+	return jsonify(item.serialize)
 
 
 

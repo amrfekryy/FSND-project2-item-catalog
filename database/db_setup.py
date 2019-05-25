@@ -20,6 +20,13 @@ class Category(Base):
     # relate Items of this Category via ForeignKey
     items = relationship("Item")
 
+    @property
+    def serialize(self):
+        """returns object data in easily serializable format"""
+        return {
+            'category_id': self.id,
+            'category_name': self.name }
+
 
 class Item(Base):
     __tablename__ = 'items'
@@ -31,6 +38,16 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
     # relate Category of this Item via ForeignKey
     category = relationship("Category")
+
+    @property
+    def serialize(self):
+        """returns object data in easily serializable format"""
+        return {
+            'item_id': self.id,
+            'item_name': self.name,
+            'item_description': self.description,
+            'category_id': self.category_id,
+            'category_name': self.category.name }
 
 
 def main():
