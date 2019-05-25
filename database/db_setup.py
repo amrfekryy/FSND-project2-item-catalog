@@ -50,6 +50,16 @@ class Item(Base):
             'category_name': self.category.name }
 
 
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key = True)
+    name = Column(String(80), nullable = False)
+    email = Column(String(80), nullable = False)
+    picture = Column(String(250))
+
+
+
 def main():
     # [create and] bind db to SQLAlchemy engine
     engine = create_engine('sqlite:///item_catalog.db')
