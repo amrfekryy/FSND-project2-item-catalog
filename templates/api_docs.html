@@ -1,0 +1,168 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+  <style>
+    pre {color:teal;}
+    .container-fluid {background-color: #FFF}
+    .response {
+      background-color: #eee;
+      color: darkorange;
+      border: 1px solid grey;
+      border-radius: 5px;
+      max-width: 700px
+    }
+  </style>
+{% endblock %}
+
+
+{% block body %}
+
+<h1>API Documentation</h1>
+
+<p>Welcome to our API! Below you can find the available API endpoints and how to use each.</p><br>
+
+<div class="row">
+  <div class="col-4">
+    <div class="list-group" id="list-tab" role="tablist">
+      <a class="list-group-item list-group-item-action active" id="list-categories-list" data-toggle="list" href="#list-categories" role="tab" aria-controls="categories">Categories Names and IDs</a>
+      <a class="list-group-item list-group-item-action" id="list-category-list" data-toggle="list" href="#list-category" role="tab" aria-controls="category">Specific Category Data</a>
+      <a class="list-group-item list-group-item-action" id="list-item-list" data-toggle="list" href="#list-item" role="tab" aria-controls="item">Specific Item Data</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <!-- Categories Names and IDs -->
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="list-categories" role="tabpanel" aria-labelledby="list-categories-list">
+        <h5>Usage</h5>
+        <p>
+          For all categories in our database, obtain category name and id.
+        </p>
+        <br>
+
+        <h5>Making a Request</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row" style="width: 120px">Method</th>
+              <td>GET</td>
+            </tr>
+            <tr>
+              <th scope="row">Base URL Path</th>
+              <td><pre>/api/categories</pre></td>
+            </tr>
+            <tr>
+              <th scope="row">Parameters</th>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+
+        <h5>Responses</h5>
+        <p><li>Upon a successful request:</li></p>
+        <pre class="response"><code>
+  {
+    "categories": [
+      {
+        "category_id": &#60;cateogry id&#62;,
+        "category_name": &#60;cateogry name&#62;
+      },
+      .
+      .
+    ]
+  } 
+        </code></pre>        
+      </div>
+      <!-- Specific Category Data -->
+      <div class="tab-pane fade" id="list-category" role="tabpanel" aria-labelledby="list-category-list">
+        <h5>Usage</h5>
+        <p>
+          For a specific category, obtain category's name and a list of category items.
+        </p>
+        <br>
+
+        <h5>Making a Request</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row" style="width: 120px">Method</th>
+              <td>GET</td>
+            </tr>
+            <tr>
+              <th scope="row">Base URL Path</th>
+              <td>
+                <pre>/api/category/&#60;category_id&#62;</pre>
+                Replace <code>&#60;category_id&#62;</code> with the equivalent id from <code>/api/categories</code>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Parameters</th>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+
+        <h5>Responses</h5>
+        <p><li>Upon a successful request:</li></p>
+        <pre class="response"><code>
+  {
+    "category_id": &#60;category id&#62;,
+    "category_name": &#60;category name&#62;,
+    "category_items": [
+      {
+        "item_id": &#60;item id&#62;,
+        "item_name": &#60;item name&#62;,
+      },
+      .
+      .
+    ]
+  } 
+        </code></pre>
+      </div>
+      <!-- Specific Item Data -->
+      <div class="tab-pane fade" id="list-item" role="tabpanel" aria-labelledby="list-item-list">
+        <h5>Usage</h5>
+        <p>
+          For a specific item, obtain item's name and description and category's id and name.
+        </p>
+        <br>
+
+        <h5>Making a Request</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row" style="width: 120px">Method</th>
+              <td>GET</td>
+            </tr>
+            <tr>
+              <th scope="row">Base URL Path</th>
+              <td>
+                <pre>/api/item/&#60;item_id&#62;</pre>
+                Replace <code>&#60;item_id&#62;</code> with the equivalent id from <code>/api/category/&#60;category_id&#62;</code>    
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Parameters</th>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+
+        <h5>Responses</h5>
+        <p><li>Upon a successful request:</li></p>
+        <pre class="response"><code>
+  {
+    "category_id": &#60;category id&#62;, 
+    "category_name": &#60;category name&#62;, 
+    "item_description": &#60;item description&#62;, 
+    "item_id": &#60;item id&#62;, 
+    "item_name": &#60;item name&#62;
+  }
+        </code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
