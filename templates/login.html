@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+
+{% block head %}
+  <!-- get state_token flask variable to use in JS -->
+  <script>
+    var state_token = '{{ state_token }}';
+  </script>
+
+  <!-- Include the Google platform library (needs jQuery)-->
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+
+  <script>
+    // Initialize the GoogleAuth object
+    function start() {
+      gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+          client_id: '833987237822-k85d1lfv9a2b4ah7p1ss6sfm5aqk96k6.apps.googleusercontent.com'
+          // Add more scopes to request in addition to 'profile' and 'email'
+          //scope: 'additional_scope'
+        });
+      });
+    }
+  </script>
+{% endblock %}
+
+
+{% block style %}
+  <!-- buttons style -->
+  <!-- https://codepen.io/davidelrizzo/pen/vEYvyv -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='buttons.css') }}">
+
+{% endblock %}
+
+
+{% block body %}  
+
+  <!-- Google login button -->
+  <div id="buttons" class="card m-auto" style="width: 20rem;">
+    <div class="card-body" style="text-align: center">
+      <h5 class="card-title">Login to<br>Item Catalog</h5>
+      <button class="loginBtn loginBtn--google">
+        Continue with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- div to display server feedback -->
+  <div id="result"></div>  
+
+  <!-- Google Login JS file -->
+  <script src="{{ url_for('static', filename='g_login.js') }}"></script>
+
+{% endblock %}

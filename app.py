@@ -2,9 +2,13 @@
 import sys
 sys.path.append("./database/")
 
+import random, string, json
+from oauth2client import client
+import requests
+
 from flask import (
 	Flask, render_template, request, redirect,
-	url_for, flash, jsonify)
+	url_for, flash, jsonify, session as login_session)
 from db_session import *
 
 app = Flask(__name__)
@@ -17,6 +21,118 @@ app = Flask(__name__)
 def remove_session(ex=None):
     db_session.remove()
 
+
+# LOGIN MANAGEMENT
+
+# get google's client id from external json file
+G_CLIENT_ID = json.loads(open('g_client_secrets.json','r').read())['web']['client_id']
+
+
+@app.route('/login/')
+def login():
+    # create anti-forgery state token
+    state_token = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    login_session['state_token'] = state_token
+    return render_template('login.html', state_token=state_token)
+
+
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    
+    # Check state_token to protect against CSRF
+    if request.args.get('state_token') != login_session['state_token']:
+        return jsonify('Invalid state token parameter'), 401
+
+    # Check user is already logged in
+    if login_session.get('user_id'):
+        return jsonify('Current user is already connected.'), 200
+    
+    # Collect one-time-auth-code from request
+    auth_code = request.data
+
+    # Exchange auth code for credentials obj containing access token, refresh token, and ID token
+    try:
+        credentials_obj = client.credentials_from_clientsecrets_and_code(
+            'g_client_secrets.json',
+            ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
+            auth_code)
+        # print(f"ACCESS TOKEN = {credentials_obj.access_token}")
+    except client.FlowExchangeError:
+        return jsonify('Failed to upgrade the authorization code'), 401
+
+    # get token information from access token:
+    r = requests.get(
+        url="https://www.googleapis.com/oauth2/v1/tokeninfo",
+        params={'access_token': credentials_obj.access_token})
+    token_info = r.json()
+    # print(f"RESPONSE KEYS = {token_info.keys()}")
+    
+    # Verify access token is valid
+    if token_info.get('error'):
+        return jsonify(token_info.get('error')), 500
+    # Verify access token is used for the intended user.
+    user_id_from_credentials = credentials_obj.id_token['sub']
+    if token_info.get('user_id') != user_id_from_credentials:
+        return jsonify("Token's user ID doesn't match given user ID."), 401
+    # Verify access token is valid for this app.
+    if token_info.get('issued_to') != G_CLIENT_ID:
+        return jsonify("Token's client ID does not match app's."), 401
+
+
+    # Access token tests passed:
+    # Store credentials in session for later use.
+    login_session['auth_provider'] = 'google'
+    login_session['access_token'] = credentials_obj.access_token
+    login_session['username'] = credentials_obj.id_token['name']
+    login_session['picture'] = credentials_obj.id_token['picture']
+    login_session['email'] = credentials_obj.id_token['email']
+    
+    # Create new user if not existant
+    try:
+        user = db_session.query(User).filter_by(email=login_session['email']).one()
+    except:
+	    new_user = User(
+	        name=login_session['username'],
+	        email=login_session['email'],
+	        picture=login_session['picture'])
+	    db_session.add(new_user)
+	    db_session.commit()
+	    user = db_session.query(User).filter_by(email=login_session['email']).one()
+    login_session['user_id'] = user.id
+
+    flash(f"You are now logged in as {login_session['username']}", "success")
+    
+    # return successful response to client-side ajax request   
+    return f"""
+        <h1>Welcome, {login_session['username']}!</h1>
+        <img src="{login_session['picture']}" style = "width:60px; height:60px; border-radius:30px; -webkit-border-radius:30px; -moz-border-radius:30px;">
+    """
+
+
+@app.route('/gdisconnect')
+def gdisconnect():
+
+    # Check user is not logged in
+    if not login_session.get('user_id'):
+        return jsonify('Current user not connected.'), 401
+
+    # revoke access token
+    # see https://developers.google.com/identity/protocols/OAuth2WebServer
+    r = requests.post(
+        url='https://accounts.google.com/o/oauth2/revoke',
+        params={'token': login_session.get('access_token')},
+        headers = {'content-type': 'application/x-www-form-urlencoded'})    # 
+    # successful disconnect returns 200 OK status code
+    if r.status_code == 200:
+        login_session.clear() # https://stackoverflow.com/q/27747578
+        flash("You have logged out successfully", "success")
+        return redirect(url_for('index'))
+    else:
+        return jsonify('Failed to revoke token for given user.'), 400
+
+
+
+# HTML ENDPOINTS
 
 @app.route('/')
 @app.route('/catalog/')
@@ -163,6 +279,7 @@ def api_docs():
 	return render_template('api_docs.html')
 
 
+# API ENDPOINTS
 
 @app.route('/api/categories')
 def api_categories():
@@ -193,7 +310,7 @@ def api_item(item_id):
 		item = db_session.query(Item).filter_by(id=item_id).one()
 	except:
 		return f"There is no item with id {item_id}"
-		
+
 	return jsonify(item.serialize)
 
 

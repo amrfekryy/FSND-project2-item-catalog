@@ -52,18 +52,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('api_docs')}}">API</a>
           </li>
-          {% if user %}
+          {% if session.get('user_id') %}
           <li class="nav-item dropdown">
             <div class="dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="{{user.picture}}" width="40" height="40" style="background-color: blue; border-radius: 20px">
+              <img src="{{session.get('picture')}}" width="40" height="40" style="background-color: blue; border-radius: 20px">
             </div>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink" style="text-align: center">
-              <a class="nav-link dropdown-item" href="#" onclick="logout();">Logout</a>
+              <a class="nav-link dropdown-item" href="{{url_for('gdisconnect')}}">Logout</a>
             </div>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
+            <a class="nav-link" href="{{url_for('login')}}">Login</a>
           </li>
           {% endif %}
         </ul>
