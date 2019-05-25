@@ -34,9 +34,43 @@
 </head>
 <body style="background-color: #ddd">
   
-  <!-- body block -->
-  <div id="body-content" class="container-fluid p-5">
+  <div id="body-content" class="container-fluid pr-5 pl-5">
 
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-sm sticky-top navbar-light bg-light mb-5">
+      
+      <a class="navbar-brand ml-3 mb-0 h1" href="{{url_for('index')}}">
+        Item Catalog
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto mr-3">
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('api_docs')}}">API</a>
+          </li>
+          {% if user %}
+          <li class="nav-item dropdown">
+            <div class="dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="{{user.picture}}" width="40" height="40" style="background-color: blue; border-radius: 20px">
+            </div>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink" style="text-align: center">
+              <a class="nav-link dropdown-item" href="#" onclick="logout();">Logout</a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -50,6 +84,7 @@
       {% endif %}
     {% endwith %}
 
+    <!-- body block -->
     {% block body %}
     {% endblock %}
   </div>
