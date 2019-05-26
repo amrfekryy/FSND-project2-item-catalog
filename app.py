@@ -5,6 +5,7 @@ sys.path.append("./database/")
 import random, string, json
 from oauth2client import client
 import requests
+from functools import wraps
 
 from flask import (
 	Flask, render_template, request, redirect,
@@ -134,6 +135,20 @@ def gdisconnect():
 
 # HTML ENDPOINTS
 
+def login_required(f):
+    """
+    Decorate routes to require login.
+    http://flask.pocoo.org/docs/1.0/patterns/viewdecorators/
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not login_session.get('user_id'):
+            flash("The requested URL requires login", "danger")
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 @app.route('/')
 @app.route('/catalog/')
 def index():
@@ -142,6 +157,7 @@ def index():
 
 
 @app.route('/categories/add/', methods=['GET', 'POST'])
+@login_required
 def add_category():
 	if request.method == 'POST':
 		# get form inputs
@@ -160,13 +176,8 @@ def add_category():
 		return render_template('add_category.html')
 
 
-@app.route('/categories/<int:category_id>/')
-@app.route('/categories/<int:category_id>/items/')
-def category_items(category_id):
-	return f"A list of items that belong to category with id {category_id}"
-
-
 @app.route('/categories/<int:category_id>/rename/', methods=['GET', 'POST'])
+@login_required
 def rename_category(category_id):
 	category = db_session.query(Category).filter_by(id=category_id).one()
 	if request.method == 'POST':
@@ -187,6 +198,7 @@ def rename_category(category_id):
 
 
 @app.route('/categories/<int:category_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def delete_category(category_id):
 	category = db_session.query(Category).filter_by(id=category_id).one()
 	if request.method == 'POST':
@@ -206,6 +218,7 @@ def delete_category(category_id):
 
 
 @app.route('/categories/<int:category_id>/items/add/', methods=['GET', 'POST'])
+@login_required
 def add_item(category_id):
 	if request.method == 'POST':
 		# get form inputs
@@ -230,12 +243,8 @@ def add_item(category_id):
 		return render_template('add_item.html', category_id=category_id)
 
 
-@app.route('/items/<int:item_id>/')
-def item_info(item_id):
-	return f"Description of item with id {item_id}"
-
-
 @app.route('/items/<int:item_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def edit_item(item_id):
 	item = db_session.query(Item).filter_by(id=item_id).one()
 	if request.method == 'POST':
@@ -258,6 +267,7 @@ def edit_item(item_id):
 
 
 @app.route('/items/<int:item_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def delete_item(item_id):
 	item = db_session.query(Item).filter_by(id=item_id).one()
 	if request.method == 'POST':
