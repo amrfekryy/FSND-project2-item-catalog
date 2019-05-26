@@ -228,6 +228,7 @@ def delete_category(category_id):
 @app.route('/categories/<int:category_id>/items/add/', methods=['GET', 'POST'])
 @login_required
 def add_item(category_id):
+    category = db_session.query(Category).filter_by(id=category_id).first()
     if request.method == 'POST':
         # get form inputs
         item_name = request.form.get('item_name')
@@ -248,7 +249,7 @@ def add_item(category_id):
         flash(f"Item <i>{new_item.name}</i> has been added", "success")
         return redirect(url_for('index'))
     else:
-        return render_template('add_item.html', category_id=category_id)
+        return render_template('add_item.html', category=category)
 
 
 @app.route('/items/<int:item_id>/edit/', methods=['GET', 'POST'])

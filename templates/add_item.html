@@ -5,8 +5,8 @@
   <div class="card m-auto" style="width: 20rem;">
     <div class="card-body" style="text-align: center">
 
-      <h5 class="card-title">Add Item</h5>
-      <form action="{{url_for('add_item', category_id=category_id)}}", method="post">
+      <h5 class="card-title">Add New Item to <i>{{category.name}}</i></h5>
+      <form action="{{url_for('add_item', category_id=category.id)}}", method="post">
         <input class="form-control mb-3" name="item_name" type="text" placeholder="Item Name">
         <textarea class="form-control mb-3" name="item_description" type="text" placeholder="Item Description" rows="3"></textarea>
         <button type="submit" class="btn btn-primary mb-3" style="width:100px">Add</button>
