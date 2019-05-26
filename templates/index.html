@@ -7,6 +7,21 @@
 </style>
 {% endblock %}
 
+{% block head %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // activate first category
+  var first_category = document.querySelectorAll('.list-group-item-action')[0];
+  first_category.classList.add("active");
+  // activate first pane
+  var first_pane = document.querySelectorAll('.tab-pane')[0];
+  first_pane.classList.add("active");
+});
+
+</script>
+{% endblock %}
+
+
 {% block body %}
 
 <div class="row">
