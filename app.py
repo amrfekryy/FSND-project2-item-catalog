@@ -11,10 +11,7 @@ import requests
 from oauth2client import client
 from functools import wraps
 # database
-# add database directory to python modules path.
-import sys
-sys.path.append("./database/")
-from db_session import *
+from database.db_session import *
 
 
 app = Flask(__name__)

@@ -1,8 +1,11 @@
+# add database directory to python modules path.
+# import sys
+# sys.path.append("./database/")
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from db_setup import Base, Category, Item, User
+from database.db_setup import Base, Category, Item, User
 
 # bind to db and tables
 engine = create_engine('sqlite:///item_catalog.db')
